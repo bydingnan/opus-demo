@@ -34,6 +34,7 @@
 #include <string.h>
 #include <opus/opus.h>
 #include <stdio.h>
+#include <time.h>
 
 /*The frame size is hardcoded for this sample code but it doesn't have to be*/
 #define FRAME_SIZE 320 /*20ms*/
@@ -143,12 +144,20 @@ int main(int argc, char **argv)
          the encoder is using a constant frame size. However, that may not
          be the case for all encoders, so the decoder must always check
          the frame size returned. */
+
+      struct timespec start, end;
+      clock_gettime(CLOCK_MONOTONIC, &start);
       frame_size = opus_decode(decoder, cbits, nbBytes, out, MAX_FRAME_SIZE, 0);
       if (frame_size<0)
       {
          fprintf(stderr, "decoder failed: %s\n", opus_strerror(frame_size));
          return EXIT_FAILURE;
       }
+      clock_gettime(CLOCK_MONOTONIC, &end);
+      float a, b ;
+      a = start.tv_sec*1000. + start.tv_nsec/1000./1000.;
+      b = end.tv_sec*1000. + end.tv_nsec/1000./1000.;
+      printf("encode start=%f end=%f, interval=%f unit:ms\n", a, b, b - a);
 
       /* Convert to little-endian ordering. */
       for(i=0;i<CHANNELS*frame_size;i++)

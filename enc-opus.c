@@ -34,6 +34,7 @@
 #include <string.h>
 #include <opus/opus.h>
 #include <stdio.h>
+#include <time.h>
 
 /*The frame size is hardcoded for this sample code but it doesn't have to be*/
 #define FRAME_SIZE 320
@@ -124,10 +125,12 @@ int main(int argc, char **argv)
          break;
       /* Convert from little-endian ordering. */
       for (i=0;i<CHANNELS*FRAME_SIZE;i++)
-         in[i]=pcm_bytes[2*i+1]<<8|pcm_bytes[2*i];
+         in[i] = pcm_bytes[2*i+1]<<8 | pcm_bytes[2*i];
 
       //printf("in[0]=%d=%d, pcm0=%d, pcm1=%d\n", in[0], *(opus_int16*)pcm_bytes, pcm_bytes[0], pcm_bytes[1]);
 
+      struct timespec start, end;
+      clock_gettime(CLOCK_MONOTONIC, &start);
       /* Encode the frame. */
       nbBytes = opus_encode(encoder, in, FRAME_SIZE, cbits, MAX_PACKET_SIZE);
       if (nbBytes<0)
@@ -135,6 +138,11 @@ int main(int argc, char **argv)
          fprintf(stderr, "encode failed: %s\n", opus_strerror(nbBytes));
          return EXIT_FAILURE;
       }
+      clock_gettime(CLOCK_MONOTONIC, &end);
+      float a, b ;
+      a = start.tv_sec*1000. + start.tv_nsec/1000./1000.;
+      b = end.tv_sec*1000. + end.tv_nsec/1000./1000.;
+      printf("encode start=%f end=%f, interval=%f unit:ms\n", a, b, b - a);
 
       //printf("nbBytes=%d\n", nbBytes);
       head[0] = nbBytes & 0xff;
