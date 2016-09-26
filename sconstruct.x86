@@ -1,0 +1,15 @@
+env=Environment()
+
+env['CC'] = 'gcc'
+env['CCFLAGS'] = ['-g', '-Wall']
+
+env['CPPPATH'] = ['./inc/']
+
+env['LIBS'] = ['opus']
+env['LIBPATH'] = ['./lib/x86']
+src = ['trivial_example.c']
+
+env.Program('codec-opus', src)
+env.Program('enc-opus', 'enc-opus.c')
+env.Program('dec-opus', 'dec-opus.c')
+

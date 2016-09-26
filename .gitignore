@@ -1,3 +1,8 @@
-tags
-massif.out
+dec-opus.o enc-opus.o trivial_example.o
+*.so
+*.o
+codec-opus
+dec-opus
+enc-opus
+lib/c600/
 .sconsign.dblite
