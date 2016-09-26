@@ -12,10 +12,10 @@ ld=C600_SDK_BIN + '/arm-none-linux-gnueabi-ld'
 
 env['CC'] = cc 
 env['CCFLAGS'] = ['-g', '-Wall']
-env['CPPPATH'] = ['./inc/'] 
+env['CPPPATH'] = ['./inc/', C600_SDK_INC] 
 
-env['LIBS'] = ['opus']
-env['LIBPATH'] = ['./lib/c600']
+env['LIBS'] = ['opus', 'rt']
+env['LIBPATH'] = ['./lib/c600', C600_SDK_LIB]
 src = ['trivial_example.c']
 
 env.Program('codec-opus', src)
