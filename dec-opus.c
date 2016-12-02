@@ -120,6 +120,7 @@ int main(int argc, char **argv)
       fread(head, sizeof(char), 2 , fin);
       
       nbBytes = head[0] | head[1] << 8;
+      printf("len =%d\n", nbBytes);
       /* Read a 16 bits/sample audio frame. */
       fread(pcm_bytes, sizeof(char), nbBytes, fin);
       if (feof(fin))
@@ -153,11 +154,12 @@ int main(int argc, char **argv)
          fprintf(stderr, "decoder failed: %s\n", opus_strerror(frame_size));
          return EXIT_FAILURE;
       }
+      printf("frame_size=%d\n", frame_size);
       clock_gettime(CLOCK_MONOTONIC, &end);
       float a, b ;
       a = start.tv_sec*1000. + start.tv_nsec/1000./1000.;
       b = end.tv_sec*1000. + end.tv_nsec/1000./1000.;
-      printf("encode start=%f end=%f, interval=%f unit:ms\n", a, b, b - a);
+      printf("decode start=%f end=%f, interval=%f unit:ms\n", a, b, b - a);
 
       /* Convert to little-endian ordering. */
       for(i=0;i<CHANNELS*frame_size;i++)

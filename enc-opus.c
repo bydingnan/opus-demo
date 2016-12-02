@@ -36,12 +36,16 @@
 #include <stdio.h>
 #include <time.h>
 
+/*16KHz sampling rate, wideband, 10ms frame, 320 bytes , mono*/
+
 /*The frame size is hardcoded for this sample code but it doesn't have to be*/
-#define FRAME_SIZE 320
+#define FRAME_SIZE 320 /*bytes*/
 #define SAMPLE_RATE 16000
 #define CHANNELS 1
-#define APPLICATION OPUS_APPLICATION_AUDIO
-#define BITRATE 14000
+//#define APPLICATION OPUS_APPLICATION_AUDIO
+#define APPLICATION OPUS_APPLICATION_RESTRICTED_LOWDELAY
+//#define APPLICATION OPUS_APPLICATION_VOIP
+#define BITRATE 16000
 
 #define MAX_FRAME_SIZE 6*960
 #define MAX_PACKET_SIZE (3*1276)
@@ -85,6 +89,16 @@ int main(int argc, char **argv)
       fprintf(stderr, "failed to set bitrate: %s\n", opus_strerror(err));
       return EXIT_FAILURE;
    }
+   err = opus_encoder_ctl(encoder, OPUS_SET_COMPLEXITY(5));
+   err = opus_encoder_ctl(encoder, OPUS_SET_FORCE_CHANNELS(1));
+   err = opus_encoder_ctl(encoder, OPUS_SET_MAX_BANDWIDTH(OPUS_BANDWIDTH_WIDEBAND));
+   err = opus_encoder_ctl(encoder, OPUS_SET_SIGNAL(OPUS_SIGNAL_VOICE));
+   //err = opus_encoder_ctl(encoder, OPUS_SET_EXPERT_FRAME_DURATION(OPUS_FRAMESIZE_10_MS)); /*set this the qualit is low, Do not use this option unless you really know what you are doing.*/
+
+   err = opus_encoder_ctl(encoder, OPUS_SET_VBR(1));
+   err = opus_encoder_ctl(encoder, OPUS_SET_DTX(0));
+   err = opus_encoder_ctl(encoder, OPUS_SET_INBAND_FEC(0));
+
    inFile = argv[1];
    fin = fopen(inFile, "r");
    if (fin==NULL)
@@ -142,7 +156,7 @@ int main(int argc, char **argv)
       float a, b ;
       a = start.tv_sec*1000. + start.tv_nsec/1000./1000.;
       b = end.tv_sec*1000. + end.tv_nsec/1000./1000.;
-      printf("encode start=%f end=%f, interval=%f unit:ms\n", a, b, b - a);
+      printf("outbytes=%d encode start=%f end=%f, interval=%f unit:ms\n", nbBytes, a, b, b - a);
 
       //printf("nbBytes=%d\n", nbBytes);
       head[0] = nbBytes & 0xff;

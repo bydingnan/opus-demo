@@ -1,0 +1,28 @@
+env=Environment()
+
+SDK_DIR ='/opt/OpenWrt-SDK-ramips-for-linux-i486-gcc-4.8-linaro_uClibc-0.9.33.2/staging_dir'
+STAGING_DIR = SDK_DIR + '/toolchain-mipsel_24kec+dsp_gcc-4.8-linaro_uClibc-0.9.33.2'
+BIN_DIR = STAGING_DIR + '/bin'
+INCLUDE_DIR = SDK_DIR + '/target-mipsel_24kec+dsp_uClibc-0.9.33.2/usr/include'
+LIB_DIR = SDK_DIR + '/target-mipsel_24kec+dsp_uClibc-0.9.33.2/usr/lib'
+
+cc = BIN_DIR + '/mipsel-openwrt-linux-gcc'
+cxx = BIN_DIR + '/mipsel-openwrt-linux-g++'
+ar = BIN_DIR + '/mipsel-openwrt-linux-ar'
+ld = BIN_DIR + '/mipsel-openwrt-linux-ld'
+
+env['PATH'] = STAGING_DIR + '/bin/'
+env['STAGING_DIR'] = STAGING_DIR
+
+env['CC'] = cc 
+env['CCFLAGS'] = ['-g', '-Wall']
+env['CPPPATH'] = ['./inc/', INCLUDE_DIR] 
+
+env['LIBS'] = ['opus', 'rt']
+env['LIBPATH'] = ['./lib/mt7688', LIB_DIR]
+
+src = ['trivial_example.c']
+env.Program('codec-opus', src)
+env.Program('enc-opus', 'enc-opus.c')
+env.Program('dec-opus', 'dec-opus.c')
+
