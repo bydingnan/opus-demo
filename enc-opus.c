@@ -89,7 +89,7 @@ int main(int argc, char **argv)
       fprintf(stderr, "failed to set bitrate: %s\n", opus_strerror(err));
       return EXIT_FAILURE;
    }
-   err = opus_encoder_ctl(encoder, OPUS_SET_COMPLEXITY(5));
+   err = opus_encoder_ctl(encoder, OPUS_SET_COMPLEXITY(4));
    err = opus_encoder_ctl(encoder, OPUS_SET_FORCE_CHANNELS(1));
    err = opus_encoder_ctl(encoder, OPUS_SET_MAX_BANDWIDTH(OPUS_BANDWIDTH_WIDEBAND));
    err = opus_encoder_ctl(encoder, OPUS_SET_SIGNAL(OPUS_SIGNAL_VOICE));
